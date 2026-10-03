@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Try Out TKA Matematika - Kelas VI</title>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --primary-light: #3b82f6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --success-color: #16a34a;
+            --active-color: #2563eb;
+            --unanswered-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        main {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.35rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .error-msg {
+            color: #dc2626;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        /* Info Cards Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-light);
+        }
+
+        .info-item h4 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-item p {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        /* Exam Layout */
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timer-box {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .question-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.7;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+
+        .option-item:hover {
+            background-color: #f8fafc;
+            border-color: var(--primary-light);
+        }
+
+        .option-item input {
+            margin-top: 0.25rem;
+            cursor: pointer;
+        }
+
+        .exam-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Palette Soal */
+        .palette-section {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        @media (max-width: 600px) {
+            .palette-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border: 1px solid var(--border-color);
+            background-color: var(--unanswered-color);
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.1s;
+        }
+
+        .palette-btn.answered {
+            background-color: var(--success-color);
+            color: white;
+            border-color: var(--success-color);
+        }
+
+        .palette-btn.active {
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+        }
+
+        .palette-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-box {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        /* Review Table */
+        .review-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .review-item {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+        }
+
+        .review-item.answered {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .review-item.unanswered {
+            border-left: 4px solid #f59e0b;
+        }
+
+        /* Live Score Table */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .live-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #16a34a;
+            border-radius: 50%;
+            margin-right: 0.4rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>TRY OUT TKA MATEMATIKA</h1>
+        <p>KELAS VI | Simulasi Tes Kemampuan Akademik Matematika SD Kelas VI</p>
+    </header>
+
+    <main>
+        <!-- 1. HALAMAN BERANDA -->
+        <div id="screen-home" class="screen active">
+            <div class="card">
+                <h2>Beranda Try Out</h2>
+                <p>Selamat datang di platform simulasi Ujian Try Out TKA Matematika resmi untuk tingkat Sekolah Dasar kelas VI.</p>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h4>Mata Pelajaran</h4>
+                        <p>Matematika</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Jenjang</h4>
+                        <p>Sekolah Dasar – Kelas VI</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Jumlah Soal</h4>
+                        <p>30 Soal Pilihan Ganda</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Sistem</h4>
+                        <p>Try Out TKA| VI</p>
+                    </div>
+                </div>
+
+                <p style="font-style: italic; color: var(--text-muted); margin-bottom: 1.5rem;">
+                    "Kerjakan setiap soal dengan teliti. Pastikan semua jawaban telah diperiksa sebelum mengakhiri ujian."
+                </p>
+
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn" onclick="goToScreen('screen-identity')">MULAI TRY OUT</button>
+                    <button class="btn btn-secondary" onclick="goToScreen('screen-livescore'); loadLiveScore();">LIHAT SCORE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. HALAMAN IDENTITAS PESERTA -->
+        <div id="screen-identity" class="screen">
+            <div class="card">
+                <h2>IDENTITAS PESERTA</h2>
+                <p>Silakan isi nama lengkap Anda dan kelassebelum masuk ke halaman petunjuk ujian.</p>
+                
+                <div class="form-group">
+                    <label for="input-nama">NAMA LENGKAP</label>
+                    <input type="text" id="input-nama" class="form-control" placeholder="Masukkan nama lengkap Anda">
+                    <div id="error-nama" class="error-msg">Nama wajib diisi.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="select-kelas">KELAS</label>
+                    <select id="select-kelas" class="form-control">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="VI A">VI A</option>
+                        <option value="VI B">VI B</option>
+                        <option value="VI C">VI C</option>
+                    </select>
+                    <div id="error-kelas" class="error-msg">Silakan pilih kelas.</div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" onclick="goToScreen('screen-home')">Kembali</button>
+                    <button class="btn" onclick="validateIdentity()">LANJUTKAN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. HALAMAN PETUNJUK -->
+        <div id="screen-instructions" class="screen">
+            <div class="card">
+                <h2>PETUNJUK PELAKSANAAN TRY OUT</h2>
+                <ol style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <li>Bacalah setiap soal dengan teliti.</li>
+                    <li>Pilih satu jawaban yang paling tepat.</li>
+                    <li>Gunakan tombol nomor soal atau navigasi untuk berpindah soal.</li>
+                    <li>Periksa kembali jawaban sebelum mengakhiri ujian.</li>
+                    <li>Setelah ujian dikumpulkan, jawaban tidak dapat diubah.</li>
+                    <li>Nilai akan dihitung secara otomatis.</li>
+                </ol>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="goToScreen('screen-identity')">Kembali</button>
+                    <button class="btn" onclick="startExam()">MULAI UJIAN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. HALAMAN UJIAN -->
+        <div id="screen-exam" class="screen">
+            <div class="card">
+                <div class="exam-header">
+                    <div>
+                        <h3 id="exam-participant-info" style="color: var(--primary-color); font-size: 1rem;">Peserta: -</h3>
+                        <p id="exam-progress-text" style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Soal 1 dari 30</p>
+                    </div>
+                    <div class="timer-box" id="timer-display">00:00:00</div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-number" id="q-num-title">SOAL 1</div>
+                    <div class="question-text" id="q-text">Teks soal akan muncul di sini...</div>
+                    
+                    <div class="options-list" id="options-container">
+                        <!-- Opsi pilihan ganda render dinamis -->
+                    </div>
+                </div>
+
+                <div class="exam-navigation">
+                    <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()">← Sebelumnya</button>
+                    <button class="btn" id="btn-next" onclick="nextQuestion()">Berikutnya →</button>
+                </div>
+
+                <div class="palette-section">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.5rem;">Navigasi Nomor Soal</h4>
+                    <div class="palette-grid" id="palette-grid">
+                        <!-- Palette nomor 1-30 -->
+                    </div>
+                    <div class="palette-legend">
+                        <div class="legend-item"><div class="legend-box" style="background: var(--success-color);"></div> Sudah dijawab</div>
+                        <div class="legend-item"><div class="legend-box" style="background: var(--unanswered-color); border: 1px solid var(--border-color);"></div> Belum dijawab</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. HALAMAN REVIEW SEBELUM SUBMIT -->
+        <div id="screen-review" class="screen">
+            <div class="card">
+                <h2>REVIEW JAWABAN</h2>
+                <p>Periksa kembali status jawaban Anda sebelum mengirimkan hasil Try Out.</p>
+
+                <div class="info-grid" style="margin-top: 1rem;">
+                    <div class="info-item">
+                        <h4>Jumlah Terjawab</h4>
+                        <p id="review-answered-count">0 / 30</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Belum Dijawab</h4>
+                        <p id="review-unanswered-count">30</p>
+                    </div>
+                </div>
+
+                <div class="review-list" id="review-list-container">
+                    <!-- Ringkasan per soal -->
+                </div>
+
+                <div id="review-warning" style="background: #fef3c7; color: #92400e; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; display: none;">
+                    Masih ada soal yang belum dijawab. Apakah Anda yakin ingin mengakhiri ujian?
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: space-between;">
+                    <button class="btn btn-secondary" onclick="goToQuestion(0)">Kembali ke Soal</button>
+                    <button class="btn" onclick="openSubmitModal()">AKHIRI & KUMPULKAN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. HALAMAN HASIL -->
+        <div id="screen-result" class="screen">
+            <div class="card">
+                <h2>HASIL TRY OUT</h2>
+                <p>Try Out telah selesai. Berikut adalah rincian hasil pengerjaan Anda:</p>
+
+                <div class="info-grid" style="margin-top: 1.5rem;">
+                    <div class="info-item">
+                        <h4>Nama Peserta</h4>
+                        <p id="res-name">-</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Kelas</h4>
+                        <p id="res-class">-</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Skor Akhir</h4>
+                        <p id="res-score" style="font-size: 1.5rem; color: var(--primary-color);">0 / 100</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Jumlah Benar / Salah</h4>
+                        <p id="res-stats">0 Benar / 0 Salah</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Waktu Mengerjakan</h4>
+                        <p id="res-duration">-</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Waktu Submit</h4>
+                        <p id="res-submittime">-</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn" onclick="goToScreen('screen-livescore'); loadLiveScore();">LIHAT LIVE SCORE</button>
+                    <button class="btn btn-secondary" onclick="goToScreen('screen-home')">KEMBALI KE BERANDA</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. HALAMAN LIVE SCORE -->
+        <div id="screen-livescore" class="screen">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2>🏆 LIVE SCORE TKA</h2>
+                    <div><span class="live-indicator"></span><span style="font-size: 0.85rem; font-weight: 600; color: #16a34a;">LIVE</span></div>
+                </div>
+                <p>Peringkat peserta Try Out TKA Matematika Kelas VI secara realtime.</p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Nama</th>
+                                <th>Kelas</th>
+                                <th>Score</th>
+                                <th>Waktu Mengerjakan</th>
+                                <th>Waktu Submit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody">
+                            <tr>
+                                <td colspan="6" class="loading-state">Memuat data dari database...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" onclick="goToScreen('screen-home')">KEMBALI KE BERANDA</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL KONFIRMASI SUBMIT -->
+    <div class="modal-overlay" id="submit-modal">
+        <div class="modal-card">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Konfirmasi Submit</h3>
+            <p style="margin-bottom: 0.5rem;">Apakah Anda yakin ingin mengakhiri Try Out?</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" onclick="closeSubmitModal()">Batal</button>
+                <button class="btn btn-danger" onclick="submitExam()">Kumpulkan Jawaban</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK & Script Utama -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import {
+            getDatabase,
+            ref,
+            push,
+            set,
+            onValue,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_rRSFuLJSgwpQxgyryd5TaHsjlMFn6A",
+            authDomain: "tryout-tka-kelas-6.firebaseapp.com",
+            databaseURL: "https://tryout-tka-kelas-6-default-rtdb.firebaseio.com/",
+            projectId: "tryout-tka-kelas-6",
+            storageBucket: "tryout-tka-kelas-6.firebasestorage.app",
+            messagingSenderId: "369244326292",
+            appId: "1:369244326292:web:7d9f07f6402cdb5199a781",
+            measurementId: "G-0ZFVXBR8C6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        console.log("Firebase berhasil diinisialisasi");
+        console.log("Realtime Database:", db);
+
+        // Data Soal 1 - 30 (Lengkap, Asli, dan Tidak Diubah)
+        const questionsData = [
+            { id: 1, question: "Ibu membeli 3 1/2 kg tepung terigu untuk membuat kue. Di rumah, ibu masih memiliki persediaan 1,25 kg tepung terigu. Jika ibu menggunakan 2 3/4 kg tepung terigu tersebut untuk membuat kue bolu, berapa kg sisa tepung terigu ibu sekarang?", options: { A: "1,75 kg", B: "2,00 kg", C: "2,25 kg", D: "2,50 kg" }, answer: "B" },
+            { id: 2, question: "Lampu merah di suatu persimpangan menyala setiap 4 menit sekali, lampu hijau menyala setiap 6 menit sekali, dan lampu kuning menyala setiap 8 menit sekali. Jika ketiga lampu sempat menyala bersamaan pada pukul 08.00 WIB, pada pukul berapa ketiganya akan menyala bersamaan untuk kedua kalinya?", options: { A: "08.01 WIB", B: "08.02 WIB", C: "08.24 WIB", D: "08.48 WIB" }, answer: "C" },
+            { id: 3, question: "Sebuah bak mandi berbentuk balok memiliki ukuran panjang 80 cm, lebar 50 cm, dan tinggi 60 cm. Bak tersebut sudah terisi air setinggi 3/4 bagian. Berapa liter volume air yang harus ditambahkan agar bak mandi tersebut terisi penuh?", options: { A: "60 liter", B: "80 liter", C: "180 liter", D: "240 liter" }, answer: "A" },
+            { id: 4, question: "Suhu di dalam lemari pendingin sebelum dihidupkan adalah 25 derajat Celcius. Setelah dihidupkan, suhunya turun 3 derajat Celcius setiap 5 menit. Berapa derajat Celcius suhu di dalam lemari pendingin setelah 20 menit?", options: { A: "13 derajat Celcius", B: "15 derajat Celcius", C: "37 derajat Celcius", D: "40 derajat Celcius" }, answer: "A" },
+            { id: 5, question: "Ibu memiliki 48 buah buku tulis dan 60 buah pensil. Barang-barang tersebut akan dibagikan kepada beberapa anak yatim dengan jumlah yang sama banyak untuk setiap jenisnya. Berapa jumlah anak paling banyak yang dapat menerima bantuan tersebut?", options: { A: "6 anak", B: "12 anak", C: "24 anak", D: "36 anak" }, answer: "B" },
+            { id: 6, question: "Dalam sebuah kelas terdapat 40 siswa. Sebanyak 35 persen siswa mengikuti ekstrakurikuler pramuka, 1/4 bagian mengikuti seni tari, dan sisanya mengikuti olahraga. Berapa banyak siswa yang mengikuti ekstrakurikuler olahraga?", options: { A: "10 siswa", B: "14 siswa", C: "16 siswa", D: "18 siswa" }, answer: "C" },
+            { id: 7, question: "Jarak antara kota A dan kota B pada peta adalah 5 cm. Jika skala peta tersebut adalah 1 : 1.200.000, berapa km jarak sebenarnya antara kota A dan kota B?", options: { A: "6 km", B: "60 km", C: "600 km", D: "6.000 km" }, answer: "B" },
+            { id: 8, question: "Sebuah lapangan berbentuk lingkaran memiliki jari-jari 14 meter. Di sekeliling lapangan tersebut akan dipasang lampu dengan jarak antar lampu adalah 2 meter. Berapa banyak lampu yang diperlukan? (Gunakan pi = 22/7)", options: { A: "22 lampu", B: "44 lampu", C: "88 lampu", D: "176 lampu" }, answer: "B" },
+            { id: 9, question: "Sebuah bus berangkat dari kota P menuju kota Q pada pukul 07.30 WIB dengan kecepatan rata-rata 60 km/jam. Jarak antara kota P dan kota Q adalah 150 km. Pukul berapa bus tersebut tiba di kota Q?", options: { A: "09.30 WIB", B: "10.00 WIB", C: "10.15 WIB", D: "10.30 WIB" }, answer: "B" },
+            { id: 10, question: "Sebuah kolam ikan memiliki volume 3.600 liter. Kolam tersebut diisi air menggunakan selang dengan debit 120 liter/menit. Berapa menit waktu yang dibutuhkan untuk mengisi kolam tersebut hingga penuh?", options: { A: "20 menit", B: "30 menit", C: "40 menit", D: "50 menit" }, answer: "B" },
+            { id: 11, question: "Nilai ulangan matematika Andi dari 5 kali ulangan adalah 75, 80, 85, 70, dan 90. Berapa nilai rata-rata ulangan matematika Andi?", options: { A: "78", B: "80", C: "82", D: "85" }, answer: "B" },
+            { id: 12, question: "Data hasil panen padi (dalam ton) dari 7 desa adalah sebagai berikut: 12, 15, 12, 18, 20, 15, 12. Median dari data tersebut adalah...", options: { A: "12", B: "14", C: "15", D: "18" }, answer: "C" },
+            { id: 13, question: "Sebuah bangun datar memiliki ciri-ciri: memiliki 4 sisi yang sama panjang, sudut yang berhadapan sama besar bukan siku-siku, dan kedua diagonalnya berpotongan tegak lurus tetapi panjangnya tidak sama. Bangun datar yang dimaksud adalah...", options: { A: "Persegi", B: "Belah ketupat", C: "Layang-layang", D: "Jajar genjang" }, answer: "B" },
+            { id: 14, question: "Sebuah taman berbentuk gabungan persegi panjang dan setengah lingkaran. Panjang persegi panjang 14 meter dan lebarnya 7 meter. Jika diameter setengah lingkaran sama dengan lebar persegi panjang, berapa luas total taman tersebut? (Gunakan pi = 22/7)", options: { A: "115,5 meter persegi", B: "136,5 meter persegi", C: "157,5 meter persegi", D: "175,0 meter persegi" }, answer: "B" },
+            { id: 15, question: "Hasil dari 4,8 dibagi 0,4 dikali 1,5 adalah...", options: { A: "1,8", B: "12,0", C: "18,0", D: "48,0" }, answer: "C" },
+            { id: 16, question: "Hasil dari akar pangkat tiga dari 17.576 adalah...", options: { A: "24", B: "26", C: "28", D: "36" }, answer: "B" },
+            { id: 17, question: "Sebuah kotak mainan berbentuk kubus memiliki panjang rusuk 25 cm. Berapa cm persegi luas permukaan kubus tersebut?", options: { A: "3.125 cm persegi", B: "3.750 cm persegi", C: "6.250 cm persegi", D: "15.625 cm persegi" }, answer: "B" },
+            { id: 18, question: "Sebuah tabung memiliki jari-jari alas 14 cm dan tinggi 20 cm. Berapa cm kubik volume tabung tersebut? (Gunakan pi = 22/7)", options: { A: "6.160 cm kubik", B: "9.240 cm kubik", C: "12.320 cm kubik", D: "18.480 cm kubik" }, answer: "C" },
+            { id: 19, question: "Urutan pecahan berikut dari yang terkecil ke terbesar adalah: 3/5; 50%; 0,65; 3/4.", options: { A: "50%; 3/5; 0,65; 3/4", B: "3/5; 50%; 0,65; 3/4", C: "50%; 0,65; 3/5; 3/4", D: "3/4; 0,65; 3/5; 50%" }, answer: "A" },
+            { id: 20, question: "Harga 3 kg buah mangga adalah Rp45.000,00. Jika Ibu ingin membeli 7 kg buah mangga tersebut, berapa uang yang harus dibayar?", options: { A: "Rp90.000,00", B: "Rp105.000,00", C: "Rp120.000,00", D: "Rp135.000,00" }, answer: "B" },
+            { id: 21, question: "Hasil dari -24 + 15 x (-4) - (-20) adalah...", options: { A: "-64", B: "-44", C: "-24", D: "16" }, answer: "A" },
+            { id: 22, question: "Umur ayah saat ini 4 kali umur anak. Jika jumlah umur ayah dan anak sekarang adalah 50 tahun, berapa umur anak 5 tahun yang akan datang?", options: { A: "10 tahun", B: "15 tahun", C: "20 tahun", D: "25 tahun" }, answer: "B" },
+            { id: 23, question: "Sebuah lapangan berbentuk persegi panjang dengan panjang 25 m dan lebar 15 m di sekelilingnya ditanami pohon dengan jarak antar pohon 5 m. Berapa jumlah pohon yang dapat ditanam?", options: { A: "12 pohon", B: "16 pohon", C: "20 pohon", D: "24 pohon" }, answer: "B" },
+            { id: 24, question: "Sebuah kantong berisi 4 bola merah, 6 bola hijau, dan 10 bola kuning. Jika diambil satu bola secara acak, berapa peluang terambilnya bola hijau?", options: { A: "3/10", B: "1/4", C: "1/3", D: "3/5" }, answer: "A" },
+            { id: 25, question: "Dalam sebuah diagram batang nilai ulangan, siswa yang mendapat nilai 6 ada 5 orang, nilai 7 ada 8 orang, nilai 8 ada 12 orang, nilai 9 ada 7 orang, dan nilai 10 ada 3 orang. Berapa jumlah seluruh siswa di kelas tersebut?", options: { A: "30 siswa", B: "35 siswa", C: "40 siswa", D: "45 siswa" }, answer: "B" },
+            { id: 26, question: "2,5 jam + 150 menit - 3.600 detik sama dengan...", options: { A: "3 jam", B: "4 jam", C: "4,5 jam", D: "5 jam" }, answer: "B" },
+            { id: 27, question: "Sebuah limas segi empat memiliki alas berbentuk persegi dengan panjang sisi 10 cm. Jika tinggi limas tersebut adalah 12 cm, berapa cm kubik volume limas tersebut?", options: { A: "400 cm kubik", B: "600 cm kubik", C: "1.200 cm kubik", D: "1.600 cm kubik" }, answer: "A" },
+            { id: 28, question: "Hasil dari 3 3/4 : 1 1/4 x 2/3 adalah...", options: { A: "1 1/3", B: "2", C: "2 1/2", D: "3" }, answer: "B" },
+            { id: 29, question: "Harga sebuah tas sekolah di toko adalah Rp200.000,00. Menjelang tahun ajaran baru, toko tersebut memberikan diskon sebesar 25%. Berapa harga yang harus dibayar untuk membeli tas tersebut?", options: { A: "Rp50.000,00", B: "Rp125.000,00", C: "Rp150.000,00", D: "Rp175.000,00" }, answer: "C" },
+            { id: 30, question: "Sebuah kebun berbentuk persegi pada denah memiliki keliling 20 cm. Jika skala denah tersebut adalah 1 : 400, berapa meter keliling kebun sebenarnya?", options: { A: "8 meter", B: "16 meter", C: "32 meter", D: "80 meter" }, answer: "D" }
+        ];
+
+        let state = {
+            nama: "",
+            kelas: "",
+            currentIndex: 0,
+            answers: {},
+            startTime: null,
+            durationSec: 0,
+            timerInterval: null,
+            isSubmitted: false
+        };
+
+        window.goToScreen = function(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        window.validateIdentity = function() {
+            const namaInput = document.getElementById('input-nama').value.trim();
+            const kelasSelect = document.getElementById('select-kelas').value;
+            const errNama = document.getElementById('error-nama');
+            const errKelas = document.getElementById('error-kelas');
+
+            let isValid = true;
+
+            if(!namaInput) {
+                errNama.style.display = 'block';
+                isValid = false;
+            } else {
+                errNama.style.display = 'none';
+            }
+
+            if(!kelasSelect) {
+                errKelas.style.display = 'block';
+                isValid = false;
+            } else {
+                errKelas.style.display = 'none';
+            }
+
+            if(isValid) {
+                state.nama = namaInput;
+                state.kelas = kelasSelect;
+                window.goToScreen('screen-instructions');
+            }
+        }
+
+        window.startExam = function() {
+            state.startTime = new Date();
+            state.answers = {};
+            state.currentIndex = 0;
+            state.isSubmitted = false;
+
+            document.getElementById('exam-participant-info').innerText = `Peserta: ${state.nama} (${state.kelas})`;
+            
+            if(state.timerInterval) clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(updateTimer, 1000);
+
+            renderPalette();
+            renderQuestion();
+            window.goToScreen('screen-exam');
+        }
+
+        function updateTimer() {
+            const now = new Date();
+            const diffSec = Math.floor((now - state.startTime) / 1000);
+            state.durationSec = diffSec;
+
+            const hrs = String(Math.floor(diffSec / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((diffSec % 3600) / 60)).padStart(2, '0');
+            const secs = String(diffSec % 60).padStart(2, '0');
+
+            const timerEl = document.getElementById('timer-display');
+            if(timerEl) {
+                timerEl.innerText = `${hrs}:${mins}:${secs}`;
+            }
+        }
+
+        function formatDuration(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m} menit ${s} detik`;
+        }
+
+        window.renderQuestion = function() {
+            const idx = state.currentIndex;
+            const q = questionsData[idx];
+
+            document.getElementById('q-num-title').innerText = `SOAL ${idx + 1}`;
+            document.getElementById('q-text').innerText = q.question;
+            document.getElementById('exam-progress-text').innerText = `Soal ${idx + 1} dari 30`;
+
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+
+            const currentAns = state.answers[idx] || '';
+
+            for(let key in q.options) {
+                const isChecked = currentAns === key ? 'checked' : '';
+                const div = document.createElement('label');
+                div.className = 'option-item';
+                div.innerHTML = `
+                    <input type="radio" name="exam-option" value="${key}" ${isChecked} onclick="selectAnswer(${idx}, '${key}')">
+                    <div><strong>${key}.</strong> ${q.options[key]}</div>
+                `;
+                optContainer.appendChild(div);
+            }
+
+            document.getElementById('btn-prev').style.display = idx === 0 ? 'none' : 'inline-block';
+            const nextBtn = document.getElementById('btn-next');
+            if(idx === questionsData.length - 1) {
+                nextBtn.innerText = "Periksa Jawaban →";
+                nextBtn.onclick = goToReview;
+            } else {
+                nextBtn.innerText = "Berikutnya →";
+                nextBtn.onclick = nextQuestion;
+            }
+
+            updatePaletteActive();
+        }
+
+        window.selectAnswer = function(qIndex, optKey) {
+            state.answers[qIndex] = optKey;
+            updatePaletteStatus();
+        }
+
+        window.nextQuestion = function() {
+            if(state.currentIndex < questionsData.length - 1) {
+                state.currentIndex++;
+                renderQuestion();
+            }
+        }
+
+        window.prevQuestion = function() {
+            if(state.currentIndex > 0) {
+                state.currentIndex--;
+                renderQuestion();
+            }
+        }
+
+        window.goToQuestion = function(index) {
+            if(index === 30) {
+                goToReview();
+            } else {
+                state.currentIndex = index;
+                renderQuestion();
+                window.goToScreen('screen-exam');
+            }
+        }
+
+        function renderPalette() {
+            const paletteGrid = document.getElementById('palette-grid');
+            paletteGrid.innerHTML = '';
+            for(let i = 0; i < 30; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.id = `palette-${i}`;
+                btn.innerText = i + 1;
+                btn.onclick = () => window.goToQuestion(i);
+                paletteGrid.appendChild(btn);
+            }
+            updatePaletteStatus();
+        }
+
+        function updatePaletteStatus() {
+            for(let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`palette-${i}`);
+                if(btn) {
+                    if(state.answers[i]) {
+                        btn.classList.add('answered');
+                    } else {
+                        btn.classList.remove('answered');
+                    }
+                }
+            }
+            updatePaletteActive();
+        }
+
+        function updatePaletteActive() {
+            for(let i = 0; i < 30; i++) {
+                const btn = document.getElementById(`palette-${i}`);
+                if(btn) {
+                    if(i === state.currentIndex) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+            }
+        }
+
+        window.goToReview = function() {
+            let answeredCount = 0;
+            const reviewList = document.getElementById('review-list-container');
+            reviewList.innerHTML = '';
+
+            for(let i = 0; i < 30; i++) {
+                const isAns = state.answers[i] !== undefined && state.answers[i] !== '';
+                if(isAns) answeredCount++;
+
+                const item = document.createElement('div');
+                item.className = `review-item ${isAns ? 'answered' : 'unanswered'}`;
+                item.innerHTML = `
+                    <span>Soal ${i + 1}</span>
+                    <span style="font-size: 0.85rem; font-weight: 600;">${isAns ? '✓ Terjawab' : '— Belum'}</span>
+                `;
+                item.style.cursor = 'pointer';
+                item.onclick = () => window.goToQuestion(i);
+                reviewList.appendChild(item);
+            }
+
+            const unansweredCount = 30 - answeredCount;
+            document.getElementById('review-answered-count').innerText = `${answeredCount} / 30`;
+            document.getElementById('review-unanswered-count').innerText = unansweredCount;
+
+            const warningEl = document.getElementById('review-warning');
+            if(unansweredCount > 0) {
+                warningEl.style.display = 'block';
+            } else {
+                warningEl.style.display = 'none';
+            }
+
+            window.goToScreen('screen-review');
+        }
+
+        window.openSubmitModal = function() {
+            document.getElementById('submit-modal').style.display = 'flex';
+        }
+
+        window.closeSubmitModal = function() {
+            document.getElementById('submit-modal').style.display = 'none';
+        }
+
+        window.submitExam = async function() {
+            if (state.isSubmitted) return;
+            state.isSubmitted = true;
+            clearInterval(state.timerInterval);
+            closeSubmitModal();
+
+            const finishDate = new Date();
+
+            let correctCount = 0;
+            let wrongCount = 0;
+
+            for(let i = 0; i < 30; i++) {
+                if(state.answers[i] === questionsData[i].answer) {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                }
+            }
+
+            const score = Math.round((correctCount / 30) * 100);
+
+            const recordData = {
+                nama: state.nama,
+                kelas: state.kelas,
+                score: score,
+                correct: correctCount,
+                wrong: wrongCount,
+                totalSoal: 30,
+                durasiDetik: state.durationSec,
+                waktuMulai: state.startTime.getTime(),
+                waktuSubmit: finishDate.getTime(),
+                timestamp: serverTimestamp()
+            };
+
+            console.log("Menyimpan data:", recordData);
+
+            try {
+                const leaderboardRef = ref(db, "leaderboard");
+                const newRecordRef = push(leaderboardRef);
+
+                await set(newRecordRef, recordData);
+
+                console.log("DATA BERHASIL MASUK KE FIREBASE", recordData);
+
+                const h = String(finishDate.getHours()).padStart(2, '0');
+                const m = String(finishDate.getMinutes()).padStart(2, '0');
+                const s = String(finishDate.getSeconds()).padStart(2, '0');
+                const submitTimeString = `${h}:${m}:${s}`;
+
+                document.getElementById('res-name').innerText = state.nama;
+                document.getElementById('res-class').innerText = state.kelas;
+                document.getElementById('res-score').innerText = `${score} / 100`;
+                document.getElementById('res-stats').innerText = `${correctCount} Benar / ${wrongCount} Salah`;
+                document.getElementById('res-duration').innerText = formatDuration(state.durationSec);
+                document.getElementById('res-submittime').innerText = submitTimeString;
+
+                window.goToScreen("screen-result");
+
+            } catch (error) {
+                console.error("GAGAL MENYIMPAN DATA KE FIREBASE:", error);
+                state.isSubmitted = false;
+
+                let errorMessage = error.message;
+                if (error.code === 'PERMISSION_DENIED' || (error.message && error.message.includes('permission'))) {
+                    errorMessage += "\n\n(Catatan: Masalah ini disebabkan oleh Firebase Realtime Database Rules. Pastikan rules Anda memperbolehkan akses write/read pada tahap pengujian).";
+                }
+
+                alert(
+                    "Hasil belum berhasil disimpan ke database.\n\n" +
+                    "Error: " + errorMessage
+                );
+
+                return;
+            }
+        };
+
+        window.loadLiveScore = function() {
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = `<tr><td colspan="6" class="loading-state">Memuat data dari database...</td></tr>`;
+
+            const leaderboardRef = ref(db, "leaderboard");
+            onValue(
+                leaderboardRef,
+                (snapshot) => {
+                    const data = snapshot.val();
+                    if(!data) {
+                        tbody.innerHTML = `<tr><td colspan="6" class="loading-state">Belum ada data peserta yang mengirimkan ujian.</td></tr>`;
+                        return;
+                    }
+
+                    let records = [];
+                    for(let key in data) {
+                        records.push(data[key]);
+                    }
+
+                    records.sort((a, b) => {
+                        if(b.score !== a.score) {
+                            return b.score - a.score;
+                        }
+                        if(a.durasiDetik !== b.durasiDetik) {
+                            return a.durasiDetik - b.durasiDetik;
+                        }
+                        return a.waktuSubmit - b.waktuSubmit;
+                    });
+
+                    tbody.innerHTML = '';
+                    records.forEach((rec, index) => {
+                        const submitDate = new Date(rec.waktuSubmit);
+                        const sh = String(submitDate.getHours()).padStart(2, '0');
+                        const sm = String(submitDate.getMinutes()).padStart(2, '0');
+                        const timeStr = `${sh}:${sm}`;
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td><strong>${rec.nama}</strong></td>
+                            <td>${rec.kelas}</td>
+                            <td><span style="color: var(--primary-color); font-weight: bold;">${rec.score}</span></td>
+                            <td>${formatDuration(rec.durasiDetik)}</td>
+                            <td>${timeStr}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                },
+                (error) => {
+                    console.error("FIREBASE LIVE SCORE ERROR:", error);
+                    tbody.innerHTML = `<tr><td colspan="6" class="loading-state" style="color: red;">Data belum dapat dimuat. Periksa konfigurasi atau Database Rules Anda.</td></tr>`;
+                }
+            );
+        }
+    </script>
+</body>
+</html>
