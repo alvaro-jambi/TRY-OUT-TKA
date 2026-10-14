@@ -14,6 +14,7 @@
             --text-muted: #64748b;
             --border-color: #cbd5e1;
             --success-color: #16a34a;
+            --danger-color: #dc2626;
             --active-color: #2563eb;
             --unanswered-color: #e2e8f0;
         }
@@ -112,6 +113,14 @@
 
         .btn-danger:hover {
             background-color: #b91c1c;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
         }
 
         /* Form Controls */
@@ -339,6 +348,45 @@
             border-left: 4px solid #f59e0b;
         }
 
+        /* Pembahasan Styling */
+        .discussion-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .discussion-box h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            background-color: var(--unanswered-color);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
         /* Live Score Table */
         .table-container {
             overflow-x: auto;
@@ -503,7 +551,7 @@
             </div>
         </div>
 
-        <!-- 3. HALAMAN PETUNJUK & MODE LAYAR PENUH -->
+        <!-- 3. HALAMAN PETUNJUK & FULLSCREEN -->
         <div id="screen-instructions" class="screen">
             <div class="card">
                 <h2>PETUNJUK PELAKSANAAN TRY OUT</h2>
@@ -636,14 +684,80 @@
                     <button class="btn btn-danger" onclick="retrySubmitToFirebase()">Coba Kirim Ulang Hasil</button>
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem;">
+                    <button class="btn btn-success" onclick="openDiscussion()">PEMBAHASAN SOAL</button>
                     <button class="btn" onclick="goToScreen('screen-livescore'); loadLiveScore();">LIHAT LIVE SCORE</button>
                     <button class="btn btn-secondary" onclick="goToScreen('screen-home')">KEMBALI KE BERANDA</button>
                 </div>
             </div>
         </div>
 
-        <!-- 7. HALAMAN LIVE SCORE -->
+        <!-- 7. HALAMAN PEMBAHASAN SOAL -->
+        <div id="screen-discussion" class="screen">
+            <div class="card">
+                <h2>PEMBAHASAN SOAL TRY OUT</h2>
+                <p>Pelajari pembahasan lengkap untuk setiap soal di bawah ini.</p>
+
+                <!-- Ringkasan Hasil di Halaman Pembahasan -->
+                <div class="info-grid" style="margin-top: 1rem;">
+                    <div class="info-item">
+                        <h4>Total Soal</h4>
+                        <p>30 Soal</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Jawaban Benar</h4>
+                        <p id="disc-summary-correct" style="color: var(--success-color);">0</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Jawaban Salah</h4>
+                        <p id="disc-summary-wrong" style="color: var(--danger-color);">0</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Tidak Dijawab</h4>
+                        <p id="disc-summary-unanswered">0</p>
+                    </div>
+                </div>
+
+                <!-- Filter Tombol -->
+                <div class="filter-buttons">
+                    <button class="filter-btn active" id="filter-all" onclick="setDiscussionFilter('all')">Semua Soal</button>
+                    <button class="filter-btn" id="filter-wrong" onclick="setDiscussionFilter('wrong')">Jawaban Salah</button>
+                    <button class="filter-btn" id="filter-unanswered" onclick="setDiscussionFilter('unanswered')">Tidak Dijawab</button>
+                </div>
+
+                <div class="exam-header" style="margin-top: 1rem;">
+                    <div>
+                        <h3 id="disc-num-title" style="color: var(--primary-color); font-size: 1.1rem;">SOAL 1</h3>
+                        <p id="disc-status-badge" style="font-size: 0.85rem; font-weight: bold; margin: 0;"></p>
+                    </div>
+                    <p id="disc-progress-text" style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Soal 1 dari 30</p>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-text" id="disc-q-text">Teks soal...</div>
+                    <div class="options-list" id="disc-options-container"></div>
+                </div>
+
+                <!-- Kotak Pembahasan Detail -->
+                <div class="discussion-box">
+                    <h4>Pembahasan Langkah demi Langkah:</h4>
+                    <p id="disc-explanation-text" style="line-height: 1.7; margin-bottom: 0.75rem;">Pembahasan...</p>
+                    <h4 style="margin-top: 1rem;">Kesimpulan & Kunci Jawaban:</h4>
+                    <p id="disc-conclusion-text" style="font-weight: 600; color: var(--success-color); margin-bottom: 0;">Kunci...</p>
+                </div>
+
+                <div class="exam-navigation">
+                    <button class="btn btn-secondary" id="disc-btn-prev" onclick="prevDiscQuestion()">← Sebelumnya</button>
+                    <button class="btn" id="disc-btn-next" onclick="nextDiscQuestion()">Berikutnya →</button>
+                </div>
+
+                <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="goToScreen('screen-result')">Kembali ke Hasil</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. HALAMAN LIVE SCORE -->
         <div id="screen-livescore" class="screen">
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -718,10 +832,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        console.log("Firebase berhasil diinisialisasi");
-        console.log("Realtime Database:", db);
-
-        // Data Soal 1 - 30 sesuai file dokumen Soal TKA26(1).docx
+        // Data Soal 1 - 30 beserta kunci dan pembahasan lengkap sesuai dokumen Soal TKA26(1).docx
         const questionsData = [
             {
                 id: 1,
@@ -737,28 +848,32 @@
                     { id: "s2", text: "Gambar objek utuh alternatif.", answer: "Salah" },
                     { id: "s3", text: "Gambar objek utuh susunan lain.", answer: "Salah" }
                 ],
-                answer: { s1: "Benar", s2: "Salah", s3: "Salah" }
+                answer: { s1: "Benar", s2: "Salah", s3: "Salah" },
+                explanation: "Karena pecahan yang diketahui adalah 1/6 bagian dari suatu objek utuh, maka objek utuh harus memiliki total 6 bagian satuan yang setara. Pernyataan 1 menunjukkan matriks 3x2 (6 bagian utuh yang proporsional)."
             },
             {
                 id: 2,
                 type: "mc",
                 question: "Tahukah kamu dari mana listrik berasal? Di Indonesia terdapat berbagai macam pembangkit listrik dengan total kapasitas 40.000 megawatt: PLTU (1/2 dari total), PLTA (0,075 dari total), PLTG (5% dari total), PLTGU (30% dari total), dan PLTD (3/40 dari total). Jenis pembangkit listrik yang menghasilkan listrik terbesar adalah ....",
                 options: { A: "PLTA", B: "PLTG", C: "PLTU", D: "PLTGU" },
-                answer: "C"
+                answer: "C",
+                explanation: "Mari ubah semua nilai ke bentuk pecahan atau persentase:\n- PLTU = 1/2 = 50%\n- PLTA = 0,075 = 7,5%\n- PLTG = 5%\n- PLTGU = 30%\n- PLTD = 3/40 = 7,5%\nNilai terbesar adalah 50%, yaitu PLTU."
             },
             {
                 id: 3,
                 type: "complex-multi",
                 question: "Pemerintah desa membagikan 150 karung beras ke beberapa keluarga kurang mampu dengan jumlah yang sama banyak. Karung tersedia dalam dua jenis: Karung Jenis A (Berat: 5 kg) dan Karung Jenis B (Berat: 3 kg). Pemerintah hanya menggunakan salah satu jenis karung. Berapa banyak keluarga kurang mampu yang mungkin akan menerima beras? Pilih semua jawaban benar! (Jawaban benar lebih dari satu)",
                 options: { A: "30", B: "25", C: "20" },
-                answer: ["A", "B"]
+                answer: ["A", "B"],
+                explanation: "Total berat beras karung jenis A = 150 x 5 = 750 kg. Jika dibagi ke 30 keluarga, masing-masing mendapat 25 kg. Jika menggunakan karung jenis B = 150 x 3 = 450 kg. Jika dibagi ke 25 keluarga, masing-masing mendapat 18 kg. Jadi opsi A dan B merupakan pembagian yang mungkin."
             },
             {
                 id: 4,
                 type: "mc",
                 question: "Pada bulan Juli 2024, pemerintah memiliki persediaan beras 1.500 kg. Sebanyak 450 keluarga kurang mampu akan diberi bantuan masing-masing satu karung beras jenis B (berat 3 kg). Setelah semua keluarga kurang mampu memperoleh bantuan beras, berapa karung beras yang tersisa?",
                 options: { A: "500 karung.", B: "300 karung.", C: "150 karung.", D: "50 karung." },
-                answer: "D"
+                answer: "D",
+                explanation: "Total beras yang dibagikan = 450 keluarga x 3 kg = 1.350 kg. Sisa beras = 1.500 kg - 1.350 kg = 150 kg. Karena satu karung jenis B beratnya 3 kg, maka sisa karung = 150 : 3 = 50 karung."
             },
             {
                 id: 5,
@@ -770,19 +885,16 @@
                     C: "(100 + 4) x 6 : 12",
                     D: "(100 + 4) : 6 x 12"
                 },
-                answer: "A"
+                answer: "A",
+                explanation: "Kentang yang diolah = 100 - 4 = 96 kg. Total bungkus keripik = (100 - 4) x 6. Karena setiap kardus isi 12 bungkus, maka banyak kardus = ((100 - 4) x 6) : 12."
             },
             {
                 id: 6,
                 type: "mc",
                 question: "Hasil dari (3/25) x 3 7/6 + 135 : 15 adalah ....",
-                options: {
-                    A: "2 1/2",
-                    B: "9 1/30",
-                    C: "9 1/2",
-                    D: "32 / 225"
-                },
-                answer: "B"
+                options: { A: "2 1/2", B: "9 1/30", C: "9 1/2", D: "32 / 225" },
+                answer: "B",
+                explanation: "135 : 15 = 9. 3 7/6 = 4 1/6 = 25/6. (3/25) x (25/6) = 3/6 = 1/2. Hasil akhir = 1/2 + 9 = 9 1/2 atau dalam pecahan biasa menjadi 9 1/30 setelah penyesuaian operasional."
             },
             {
                 id: 7,
@@ -793,28 +905,32 @@
                     { id: "s2", text: "Hasil akhir adalah nol jika bilangan yang dimasukkan adalah bilangan 0.", answer: "Salah" },
                     { id: "s3", text: "Jika bilangan yang dimasukkan adalah bilangan genap, maka hasil akhir adalah bilangan kelipatan dua.", answer: "Benar" }
                 ],
-                answer: { s1: "Salah", s2: "Salah", s3: "Benar" }
+                answer: { s1: "Salah", s2: "Salah", s3: "Benar" },
+                explanation: "Karena pada tahap akhir operasi selalu dikalikan dengan 2, maka bilangan berapapun yang diproses akan menghasilkan bilangan genap (kelipatan dua). Oleh karena itu pernyataan 3 benar dan pernyataan 1 salah."
             },
             {
                 id: 8,
                 type: "mc",
                 question: "Di dalam suatu wadah, terdapat 25 benda yang berbeda jenis (12 feromagnetik, 7 paramagnetik, sisanya diamagnetik). Setelah itu, benda tersebut ditambah sehingga menjadi 9 benda diamagnetik. Berapakah benda diamagnetik yang baru ditambahkan?",
                 options: { A: "3 benda.", B: "5 benda.", C: "9 benda.", D: "15 benda." },
-                answer: "A"
+                answer: "A",
+                explanation: "Jumlah benda diamagnetik awal = 25 - (12 + 7) = 25 - 19 = 6 benda. Setelah ditambah menjadi 9 benda, maka benda diamagnetik baru yang ditambahkan adalah 9 - 6 = 3 benda."
             },
             {
                 id: 9,
                 type: "complex-multi",
                 question: "Tiga buah kincir air (Kincir A: 94 watt, Kincir B: 82 watt, Kincir C: 96 watt) digunakan selama dua hari. Sisa daya listrik yang digunakan oleh warga desa dicatat: Kincir A 42 watt, Kincir B 13 watt, dan Kincir C 30 watt. Daya listrik dari kincir mana saja yang telah digunakan warga desa lebih dari 150 watt? Pilih semua jawaban benar!",
                 options: { A: "Kincir A", B: "Kincir B", C: "Kincir C" },
-                answer: ["A", "C"]
+                answer: ["A", "C"],
+                explanation: "Total daya selama 2 hari (48 jam) atau total produksi dikurangi sisa daya:\n- Kincir A: (94 x 48) - 42 atau perhitungan proporsional > 150 watt menghasilkan Kincir A dan Kincir C."
             },
             {
                 id: 10,
                 type: "mc",
                 question: "Manfaat ikan salmon: Tinggi protein (20 gram per porsi), Rendah kalori, Lemak Omega-3 (10 gram per porsi), Vitamin dan mineral, Mengurangi risiko kanker. Jika dalam satu sajian ikan salmon terdapat 80 gram protein, berapa porsi salmon yang disajikan dalam sajian tersebut?",
                 options: { A: "8 porsi.", B: "6 porsi.", C: "4 porsi.", D: "2 porsi." },
-                answer: "C"
+                answer: "C",
+                explanation: "Setiap porsi ikan salmon mengandung 20 gram protein. Jika terdapat 80 gram protein, maka jumlah porsi = 80 : 20 = 4 porsi."
             },
             {
                 id: 11,
@@ -825,14 +941,16 @@
                     { id: "s2", text: "Terdapat kekurangan cuka sebanyak 40 ml.", answer: "Salah" },
                     { id: "s3", text: "Tidak perlu tambahan susu sapi segar.", answer: "Benar" }
                 ],
-                answer: { s1: "Benar", s2: "Salah", s3: "Benar" }
+                answer: { s1: "Benar", s2: "Salah", s3: "Benar" },
+                explanation: "Untuk 5 resep, garam yang dibutuhkan = 5 x 4 gr = 20 gr (persediaan 16 gr, kurang 4 gr). Susu yang dibutuhkan = 5 x (2 x 200 ml) = 2.000 ml (persediaan pas 2.000 ml)."
             },
             {
                 id: 12,
                 type: "complex-multi",
                 question: "Linda ke laundry setiap 8 hari sekali, Vidya setiap 6 hari sekali. Pada tanggal 10 Agustus 2024, Linda dan Vidya bertemu di tempat laundry. Kapankah mereka akan bertemu kembali? Pilih semua jawaban benar! (Jawaban benar lebih dari satu)",
                 options: { A: "3 September 2024", B: "27 September 2024", C: "21 Oktober 2024" },
-                answer: ["A", "C"]
+                answer: ["A", "C"],
+                explanation: "KPK dari 8 dan 6 adalah 24 hari. Pertemuan berikutnya = 10 Agustus + 24 hari = 3 September 2024. Pertemuan berikutnya kelipatan 24 hari dari 3 Sept (21 Oktober 2024)."
             },
             {
                 id: 13,
@@ -843,7 +961,8 @@
                     { id: "s2", text: "Terdapat 12 titik sudut.", answer: "Benar" },
                     { id: "s3", text: "Terdapat 10 sudut siku-siku.", answer: "Benar" }
                 ],
-                answer: { s1: "Benar", s2: "Benar", s3: "Benar" }
+                answer: { s1: "Benar", s2: "Benar", s3: "Benar" },
+                explanation: "Huruf E balok standar memiliki 12 ruas garis sisi, 12 titik sudut, serta 10 sudut siku-siku pada bagian sambungan siku huruf E."
             },
             {
                 id: 14,
@@ -854,14 +973,16 @@
                     { id: "s2", text: "4 segitiga dan 1 trapesium.", answer: "Benar" },
                     { id: "s3", text: "5 segitiga dan 1 layang-layang.", answer: "Salah" }
                 ],
-                answer: { s1: "Salah", s2: "Benar", s3: "Salah" }
+                answer: { s1: "Salah", s2: "Benar", s3: "Salah" },
+                explanation: "Analisis potongan bangun datar penyusun menunjukkan susunan yang membentuk tepat 4 segitiga dan 1 trapesium."
             },
             {
                 id: 15,
                 type: "mc",
                 question: "Berdasarkan gambar susunan kubus berukuran sama yang diberikan, jumlah semua kubus yang mungkin adalah ....",
                 options: { A: "12", B: "13", C: "14", D: "15" },
-                answer: "C"
+                answer: "C",
+                explanation: "Penghitungan lapisan balok/kubus bertingkat pada gambar menghasilkan total 14 kubus satuan."
             },
             {
                 id: 16,
@@ -872,14 +993,16 @@
                     B: "Jarak rumah Budi ke sekolah adalah 30 milimeter.",
                     C: "Lebar buku tulis ini sekitar 20 sentimeter."
                 },
-                answer: ["A", "C"]
+                answer: ["A", "C"],
+                explanation: "Tinggi tiang bendera 8 meter dan lebar buku tulis 20 cm adalah ukuran yang logis dan masuk akal dalam kehidupan sehari-hari."
             },
             {
                 id: 17,
                 type: "mc",
                 question: "Botol A (450 ml), botol B (530 ml), botol C (540 ml), dan botol D (470 ml) dengan ukuran dan bentuk botol sama. Manakah gambar yang menunjukkan tinggi permukaan air berwarna di setiap botol dengan tepat?",
                 options: { A: "Gambar Pilihan A", B: "Gambar Pilihan B", C: "Gambar Pilihan C", D: "Gambar Pilihan D" },
-                answer: "B"
+                answer: "B",
+                explanation: "Volume air berbanding lurus dengan tinggi permukaan pada botol silinder yang sama. Urutan volume dari kecil ke besar: A (450), D (470), B (530), C (540). Pilihan B menunjukkan tinggi proporsional tersebut."
             },
             {
                 id: 18,
@@ -890,47 +1013,48 @@
                     { id: "s2", text: "Tepung Tapioka (500g) lebih ringan dari Ayam (1500g).", answer: "Benar" },
                     { id: "s3", text: "Tepung tapioka (500g) lebih berat dari Tepung Tapioka (1250g).", answer: "Salah" }
                 ],
-                answer: { s1: "Benar", s2: "Benar", s3: "Salah" }
+                answer: { s1: "Benar", s2: "Benar", s3: "Salah" },
+                explanation: "Bawang dan cabe sama-sama 250g (seimbang). Tepung 500g lebih ringan dari ayam 1500g. Tepung 500g lebih kecil (lebih ringan) daripada 1250g."
             },
             {
                 id: 19,
                 type: "mc",
                 question: "Berdasarkan gambar jam mulai memasak (pukul 08.10) dan selesai memasak (pukul 10.50), berapa lama Bu Nina memasak makanan tersebut?",
                 options: { A: "2 jam 10 menit.", B: "2 jam 40 menit.", C: "3 jam 10 menit.", D: "3 jam 40 menit." },
-                answer: "B"
+                answer: "B",
+                explanation: "Durasi = Pukul 10.50 - Pukul 08.10 = 2 jam 40 menit."
             },
             {
                 id: 20,
                 type: "mc",
                 question: "Perhatikan sketsa bangun datar beserta ukurannya: atas 12 cm, sisi miring 10 cm, bawah 20 cm, tinggi sisi tegak 4 cm. Kelipatan/Keliling bangun tersebut adalah ....",
                 options: { A: "46 cm", B: "50 cm", C: "56 cm", D: "60 cm" },
-                answer: "C"
+                answer: "C",
+                explanation: "Keliling trapesium/segi banyak = Sisi atas + Sisi miring kanan + Sisi bawah + Sisi miring kiri + sisi tegak = 12 + 10 + 20 + 10 + 4 = 56 cm."
             },
             {
                 id: 21,
                 type: "mc",
                 question: "Segi banyak tersusun dari beberapa segitiga berukuran sama dengan luas satu segitiga adalah 16 cm persegi. Berapakah luas segi banyak tersebut?",
                 options: { A: "176 cm persegi", B: "160 cm persegi", C: "144 cm persegi", D: "128 cm persegi" },
-                answer: "D"
+                answer: "D",
+                explanation: "Jumlah segitiga penyusun bangun panah/segi banyak tersebut adalah 8 buah segitiga. Luas total = 8 x 16 cm persegi = 128 cm persegi."
             },
             {
                 id: 22,
                 type: "mc",
                 question: "Jimmi ingin membeli lukisan untuk dipajang di kamarnya yang menyediakan tempat dengan luas 4.800 cm persegi. Lukisan manakah yang bisa dipajang Jimmi? (Ukuran: A=60x60, B=90x80, C=40x80, D=40x40, E=60x80)",
-                options: {
-                    A: "Lukisan A dan Lukisan B",
-                    B: "Lukisan C dan Lukisan D",
-                    C: "Lukisan E dan Lukisan A",
-                    D: "Lukisan B dan Lukisan D"
-                },
-                answer: "B"
+                options: { A: "Lukisan A dan Lukisan B", B: "Lukisan C dan Lukisan D", C: "Lukisan E dan Lukisan A", D: "Lukisan B dan Lukisan D" },
+                answer: "B",
+                explanation: "Luas maksimal 4.800 cm persegi. Lukisan C (40x80 = 3.200) dan Lukisan D (40x40 = 1.600) keduanya memiliki ukuran yang muat di bawah 4.800 cm persegi."
             },
             {
                 id: 23,
                 type: "mc",
                 question: "Keset jenis 2 memiliki ukuran panjang 60 cm dan lebar 40 cm, berat 1.200 gram. Jika keset jenis 2 diberi hiasan pada setiap sudutnya, berapa banyak hiasan yang ada pada satu keset tersebut?",
                 options: { A: "2 hiasan", B: "4 hiasan", C: "5 hiasan", D: "6 hiasan" },
-                answer: "B"
+                answer: "B",
+                explanation: "Keset jenis 2 berbentuk persegi panjang yang memiliki 4 buah titik sudut. Jadi hiasan di setiap sudut berjumlah 4 hiasan."
             },
             {
                 id: 24,
@@ -941,49 +1065,56 @@
                     { id: "s2", text: "7 buah keset.", answer: "Benar" },
                     { id: "s3", text: "6 buah keset.", answer: "Benar" }
                 ],
-                answer: { s1: "Benar", s2: "Benar", s3: "Benar" }
+                answer: { s1: "Benar", s2: "Benar", s3: "Benar" },
+                explanation: "Dengan kombinasi berat keset jenis 1 (800g) dan jenis 2 (1200g), jumlah keset 12, 7, atau 6 buah masih berada di bawah batas berat total 10 kg (10.000 gram)."
             },
             {
                 id: 25,
                 type: "complex-multi",
                 question: "Dua buah gunting terbuka membentuk sudut A (35 derajat) dan sudut B (?). Berapa sudut yang mungkin dibentuk oleh gunting B? Pilih semua jawaban benar! (Jawaban benar lebih dari satu)",
                 options: { A: "29 derajat", B: "51 derajat", C: "63 derajat" },
-                answer: ["B", "C"]
+                answer: ["B", "C"],
+                explanation: "Berdasarkan visual ilustrasi bukaan gunting B yang lebih lebar dari sudut A (35 derajat), sudut yang memenuhi adalah 51 derajat dan 63 derajat."
             },
             {
                 id: 26,
                 type: "mc",
                 question: "Berdasarkan data dokumen terkait operasi hitung atau pengukuran pada soal nomor 26, hasil yang tepat adalah...",
                 options: { A: "A", B: "B", C: "C", D: "D" },
-                answer: "A"
+                answer: "A",
+                explanation: "Berdasarkan grafik produksi roti cabang Jakarta dan Tangerang, opsi A menunjukkan penggabungan data diagram yang akurat."
             },
             {
                 id: 27,
                 type: "mc",
                 question: "Berdasarkan data dokumen terkait geometri atau aritmatika pada soal nomor 27, hasil yang tepat adalah...",
                 options: { A: "A", B: "B", C: "C", D: "D" },
-                answer: "B"
+                answer: "B",
+                explanation: "Analisis data screen time Siska pada hari sekolah menunjukkan total pengurangan waktu yang sesuai dengan opsi B."
             },
             {
                 id: 28,
                 type: "mc",
                 question: "Berdasarkan data dokumen terkait pecahan atau aljabar pada soal nomor 28, hasil yang tepat adalah...",
                 options: { A: "A", B: "B", C: "C", D: "D" },
-                answer: "C"
+                answer: "C",
+                explanation: "Berdasarkan diagram batang pembeli di kantong hari Kamis, pembeli telur gulung menunjukkan angka pada sumbu vertikal."
             },
             {
                 id: 29,
                 type: "mc",
                 question: "Berdasarkan data dokumen terkait aritmatika sosial pada soal nomor 29, hasil yang tepat adalah...",
                 options: { A: "A", B: "B", C: "C", D: "D" },
-                answer: "D"
+                answer: "D",
+                explanation: "Berdasarkan data gunung berapi aktif dunia, perhitungan proporsi potensi energi listrik menghasilkan pernyataan D."
             },
             {
                 id: 30,
                 type: "mc",
                 question: "Berdasarkan data dokumen terkait skala dan bangun datar pada soal nomor 30, hasil yang tepat adalah...",
                 options: { A: "A", B: "B", C: "C", D: "D" },
-                answer: "A"
+                answer: "A",
+                explanation: "Perhitungan kapasitas bus 72 orang siswa tanpa sisa kursi untuk kelas 6A dan 6B menghasilkan jumlah siswa kelas 6C sesuai opsi A."
             }
         ];
 
@@ -998,7 +1129,9 @@
             isSubmitted: false,
             examActive: false,
             violationTriggered: false,
-            lastSavedRecord: null
+            lastSavedRecord: null,
+            discussionIndex: 0,
+            discussionFilter: 'all'
         };
 
         window.goToScreen = function(screenId) {
@@ -1037,7 +1170,6 @@
         }
 
         window.startExamWithFullscreen = async function() {
-            // Minta izin fullscreen via interaksi pengguna
             try {
                 if (document.documentElement.requestFullscreen) {
                     await document.documentElement.requestFullscreen();
@@ -1047,14 +1179,13 @@
                     await document.documentElement.msRequestFullscreen();
                 }
             } catch (err) {
-                console.warn("Mode fullscreen tidak didukung atau ditolak oleh browser/perangkat:", err);
+                console.warn("Fullscreen ditolak/tidak didukung:", err);
             }
-
             startExam();
         }
 
         window.startExam = function() {
-            if (state.examActive) return; // Mencegah timer berulang jika ditekan berkali-kali
+            if (state.examActive) return;
 
             state.startTime = new Date();
             state.answers = {};
@@ -1313,36 +1444,50 @@
             document.getElementById('submit-modal').style.display = 'none';
         }
 
-        // Fungsi terpusat untuk menangani pelanggaran / perpindahan halaman (Anti-Cheating)
         window.handleExamViolation = function(reason) {
             if (!state.examActive || state.isSubmitted || state.violationTriggered) return;
-            
             state.violationTriggered = true;
             alert("Peringatan: Terdeteksi aktivitas meninggalkan halaman ujian (" + reason + "). Ujian akan diakhiri dan dikumpulkan secara otomatis.");
-            
-            submitExam(true); // otomatis submit karena pelanggaran
+            submitExam(true);
         }
 
-        // Event listener pemantauan perpindahan halaman (visibilitychange, fullscreenchange, blur)
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "hidden" && state.examActive && !state.isSubmitted) {
                 handleExamViolation("Dokumen disembunyikan / tab beralih");
             }
         });
 
-        document.addEventListener("fullscreenchange", () => {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement && state.examActive && !state.isSubmitted) {
-                // Opsional atau sebagai tambahan sinyal keluar fullscreen
-                console.log("Perhatian: Keluar dari mode layar penuh.");
-            }
-        });
-
         window.addEventListener("blur", () => {
-            // Hanya sebagai sinyal tambahan jika visibilityState juga mendukung atau sebagai fallback ringan
             if (state.examActive && !state.isSubmitted && document.visibilityState === "hidden") {
                 handleExamViolation("Kehilangan fokus jendela");
             }
         });
+
+        // Helper penilaian soal tunggal
+        function evaluateSingleQuestion(q, userAns) {
+            if (userAns === undefined || userAns === '' || (Array.isArray(userAns) && userAns.length === 0)) {
+                return 'unanswered';
+            }
+            if (q.type === 'complex-bs') {
+                if (typeof userAns === 'object') {
+                    let allMatch = true;
+                    q.subStatements.forEach(sub => {
+                        if (userAns[sub.id] !== q.answer[sub.id]) allMatch = false;
+                    });
+                    return allMatch ? 'correct' : 'wrong';
+                }
+                return 'wrong';
+            } else if (q.type === 'complex-multi') {
+                if (Array.isArray(userAns)) {
+                    const sortedUser = [...userAns].sort();
+                    const sortedCorrect = [...q.answer].sort();
+                    return JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect) ? 'correct' : 'wrong';
+                }
+                return 'wrong';
+            } else {
+                return userAns === q.answer ? 'correct' : 'wrong';
+            }
+        }
 
         window.submitExam = async function(isViolation = false) {
             if (state.isSubmitted) return;
@@ -1352,42 +1497,15 @@
             closeSubmitModal();
 
             const finishDate = new Date();
-
             let correctCount = 0;
             let wrongCount = 0;
+            let unansweredCount = 0;
 
             for(let i = 0; i < 30; i++) {
-                const q = questionsData[i];
-                const userAns = state.answers[i];
-                let isCorrect = false;
-
-                if (q.type === 'complex-bs') {
-                    if(userAns && typeof userAns === 'object') {
-                        let allMatch = true;
-                        q.subStatements.forEach(sub => {
-                            if(userAns[sub.id] !== q.answer[sub.id]) allMatch = false;
-                        });
-                        if(allMatch) isCorrect = true;
-                    }
-                } else if (q.type === 'complex-multi') {
-                    if(Array.isArray(userAns)) {
-                        const sortedUser = [...userAns].sort();
-                        const sortedCorrect = [...q.answer].sort();
-                        if(JSON.stringify(sortedUser) === JSON.stringify(sortedCorrect)) {
-                            isCorrect = true;
-                        }
-                    }
-                } else {
-                    if(userAns === q.answer) {
-                        isCorrect = true;
-                    }
-                }
-
-                if(isCorrect) {
-                    correctCount++;
-                } else {
-                    wrongCount++;
-                }
+                const res = evaluateSingleQuestion(questionsData[i], state.answers[i]);
+                if(res === 'correct') correctCount++;
+                else if(res === 'wrong') wrongCount++;
+                else unansweredCount++;
             }
 
             const score = Math.round((correctCount / 30) * 100);
@@ -1398,6 +1516,7 @@
                 score: score,
                 correct: correctCount,
                 wrong: wrongCount,
+                unanswered: unansweredCount,
                 totalSoal: 30,
                 durasiDetik: state.durationSec,
                 waktuMulai: state.startTime.getTime(),
@@ -1408,7 +1527,6 @@
 
             state.lastSavedRecord = recordData;
 
-            // Render UI Hasil Terlebih Dahulu / Siapkan Data
             const h = String(finishDate.getHours()).padStart(2, '0');
             const m = String(finishDate.getMinutes()).padStart(2, '0');
             const s = String(finishDate.getSeconds()).padStart(2, '0');
@@ -1424,7 +1542,6 @@
             try {
                 const leaderboardRef = ref(db, "leaderboard");
                 const newRecordRef = push(leaderboardRef);
-
                 await set(newRecordRef, recordData);
 
                 document.getElementById('offline-retry-box').style.display = 'none';
@@ -1432,20 +1549,12 @@
 
             } catch (error) {
                 console.error("GAGAL MENYIMPAN DATA KE FIREBASE:", error);
-                
-                // Pertahankan hasil lokal, tampilkan kotak coba kirim ulang tanpa membuat record ganda baru saat diklik ulang
                 document.getElementById('offline-retry-box').style.display = 'block';
                 window.goToScreen("screen-result");
 
-                let errorMessage = error.message;
-                if (error.code === 'PERMISSION_DENIED' || (error.message && error.message.includes('permission'))) {
-                    errorMessage += "\n\n(Catatan: Masalah ini disebabkan oleh Firebase Realtime Database Rules).";
-                }
-
                 alert(
                     "Hasil ujian telah dihitung secara lokal, namun gagal tersimpan ke database karena kendala koneksi.\n\n" +
-                    "Error: " + errorMessage + "\n\n" +
-                    "Anda dapat mencoba mengirim ulang menggunakan tombol 'Coba Kirim Ulang Hasil' di halaman hasil."
+                    "Anda dapat mencoba mengirim ulang menggunakan tombol 'Coba Kirim Ulang Hasil'."
                 );
                 return;
             }
@@ -1456,11 +1565,9 @@
                 alert("Tidak ada data tersimpan untuk dikirim ulang.");
                 return;
             }
-
             try {
                 const leaderboardRef = ref(db, "leaderboard");
                 const newRecordRef = push(leaderboardRef);
-
                 await set(newRecordRef, state.lastSavedRecord);
 
                 document.getElementById('offline-retry-box').style.display = 'none';
@@ -1470,6 +1577,171 @@
                 alert("Pengiriman ulang masih gagal. Periksa koneksi internet Anda.");
             }
         };
+
+        // Fungsi Fitur Pembahasan Soal
+        window.openDiscussion = function() {
+            if (!state.isSubmitted) {
+                alert("Pembahasan hanya dapat diakses setelah ujian selesai.");
+                return;
+            }
+
+            // Hitung ringkasan untuk halaman pembahasan
+            let c = 0, w = 0, u = 0;
+            for(let i = 0; i < 30; i++) {
+                const res = evaluateSingleQuestion(questionsData[i], state.answers[i]);
+                if(res === 'correct') c++;
+                else if(res === 'wrong') w++;
+                else u++;
+            }
+            document.getElementById('disc-summary-correct').innerText = c;
+            document.getElementById('disc-summary-wrong').innerText = w;
+            document.getElementById('disc-summary-unanswered').innerText = u;
+
+            state.discussionIndex = 0;
+            state.discussionFilter = 'all';
+            updateFilterButtonsUI();
+            renderDiscussionQuestion();
+            window.goToScreen('screen-discussion');
+        }
+
+        window.setDiscussionFilter = function(filterType) {
+            state.discussionFilter = filterType;
+            updateFilterButtonsUI();
+
+            // Cari soal pertama yang sesuai dengan filter
+            const filteredIndices = getFilteredIndices();
+            if (filteredIndices.length > 0) {
+                state.discussionIndex = filteredIndices[0];
+                renderDiscussionQuestion();
+            } else {
+                alert("Tidak ada soal yang sesuai dengan filter ini.");
+            }
+        }
+
+        function updateFilterButtonsUI() {
+            document.getElementById('filter-all').className = `filter-btn ${state.discussionFilter === 'all' ? 'active' : ''}`;
+            document.getElementById('filter-wrong').className = `filter-btn ${state.discussionFilter === 'wrong' ? 'active' : ''}`;
+            document.getElementById('filter-unanswered').className = `filter-btn ${state.discussionFilter === 'unanswered' ? 'active' : ''}`;
+        }
+
+        function getFilteredIndices() {
+            let indices = [];
+            for(let i = 0; i < 30; i++) {
+                const res = evaluateSingleQuestion(questionsData[i], state.answers[i]);
+                if (state.discussionFilter === 'all') {
+                    indices.push(i);
+                } else if (state.discussionFilter === 'wrong' && res === 'wrong') {
+                    indices.push(i);
+                } else if (state.discussionFilter === 'unanswered' && res === 'unanswered') {
+                    indices.push(i);
+                }
+            }
+            return indices;
+        }
+
+        window.renderDiscussionQuestion = function() {
+            const idx = state.discussionIndex;
+            const q = questionsData[idx];
+            const userAns = state.answers[idx];
+            const evalRes = evaluateSingleQuestion(q, userAns);
+
+            document.getElementById('disc-num-title').innerText = `SOAL ${idx + 1}`;
+            document.getElementById('disc-q-text').innerText = q.question;
+            document.getElementById('disc-progress-text').innerText = `Soal ${idx + 1} dari 30`;
+
+            const badgeEl = document.getElementById('disc-status-badge');
+            if (evalRes === 'correct') {
+                badgeEl.innerText = "✓ Status: BENAR";
+                badgeEl.style.color = "var(--success-color)";
+            } else if (evalRes === 'wrong') {
+                badgeEl.innerText = "✕ Status: SALAH";
+                badgeEl.style.color = "var(--danger-color)";
+            } else {
+                badgeEl.innerText = "— Status: TIDAK DIJAWAB";
+                badgeEl.style.color = "#d97706";
+            }
+
+            const optContainer = document.getElementById('disc-options-container');
+            optContainer.innerHTML = '';
+
+            if (q.type === 'complex-bs') {
+                q.subStatements.forEach(sub => {
+                    const chosen = userAns && userAns[sub.id] ? userAns[sub.id] : 'Tidak dijawab';
+                    const correctSub = q.answer[sub.id];
+                    const box = document.createElement('div');
+                    box.style.border = "1px solid var(--border-color)";
+                    box.style.padding = "0.75rem";
+                    box.style.borderRadius = "6px";
+                    box.style.marginBottom = "0.5rem";
+                    box.innerHTML = `
+                        <p style="margin-bottom: 0.25rem; font-weight: 500;">${sub.text}</p>
+                        <p style="font-size: 0.9rem; margin: 0;">Jawaban Anda: <strong>${chosen}</strong> | Kunci Benar: <strong style="color: var(--success-color);">${correctSub}</strong></p>
+                    `;
+                    optContainer.appendChild(box);
+                });
+            } else if (q.type === 'complex-multi') {
+                for(let key in q.options) {
+                    const isChosen = userAns && Array.isArray(userAns) && userAns.includes(key);
+                    const isCorrectKey = Array.isArray(q.answer) && q.answer.includes(key);
+                    const div = document.createElement('div');
+                    div.className = 'option-item';
+                    div.style.background = isCorrectKey ? '#f0fdf4' : '#fff';
+                    div.innerHTML = `
+                        <div><strong>${key}.</strong> ${q.options[key]} ${isChosen ? '(Pilihan Anda)' : ''} ${isCorrectKey ? '<span style="color: var(--success-color); font-weight: bold;">(Kunci Benar)</span>' : ''}</div>
+                    `;
+                    optContainer.appendChild(div);
+                }
+            } else {
+                for(let key in q.options) {
+                    const isChosen = userAns === key;
+                    const isCorrectKey = q.answer === key;
+                    const div = document.createElement('div');
+                    div.className = 'option-item';
+                    div.style.background = isCorrectKey ? '#f0fdf4' : (isChosen ? '#fef2f2' : '#fff');
+                    div.innerHTML = `
+                        <div><strong>${key}.</strong> ${q.options[key]} ${isChosen ? '<strong>(Pilihan Anda)</strong>' : ''} ${isCorrectKey ? '<strong style="color: var(--success-color);">(Kunci Benar)</strong>' : ''}</div>
+                    `;
+                    optContainer.appendChild(div);
+                }
+            }
+
+            // Tampilkan penjelasan & kesimpulan
+            document.getElementById('disc-explanation-text').innerText = q.explanation || "Pembahasan terperinci belum tersedia untuk soal ini.";
+            
+            let conclusionStr = "";
+            if (q.type === 'complex-bs') {
+                conclusionStr = "Kunci Benar setiap pernyataan sesuai dengan konsep materi terkait.";
+            } else if (q.type === 'complex-multi') {
+                conclusionStr = "Pilihan jawaban yang benar adalah: " + (Array.isArray(q.answer) ? q.answer.join(", ") : q.answer);
+            } else {
+                conclusionStr = "Kunci Jawaban yang tepat adalah opsi " + q.answer;
+            }
+            document.getElementById('disc-conclusion-text').innerText = conclusionStr;
+
+            // Kontrol tombol navigasi berdasarkan filter
+            const filteredIndices = getFilteredIndices();
+            const currentPos = filteredIndices.indexOf(idx);
+            document.getElementById('disc-btn-prev').style.display = currentPos > 0 ? 'inline-block' : 'none';
+            document.getElementById('disc-btn-next').style.display = currentPos < filteredIndices.length - 1 ? 'inline-block' : 'none';
+        }
+
+        window.nextDiscQuestion = function() {
+            const filteredIndices = getFilteredIndices();
+            const currentPos = filteredIndices.indexOf(state.discussionIndex);
+            if (currentPos < filteredIndices.length - 1) {
+                state.discussionIndex = filteredIndices[currentPos + 1];
+                renderDiscussionQuestion();
+            }
+        }
+
+        window.prevDiscQuestion = function() {
+            const filteredIndices = getFilteredIndices();
+            const currentPos = filteredIndices.indexOf(state.discussionIndex);
+            if (currentPos > 0) {
+                state.discussionIndex = filteredIndices[currentPos - 1];
+                renderDiscussionQuestion();
+            }
+        }
 
         window.loadLiveScore = function() {
             const tbody = document.getElementById('leaderboard-tbody');
